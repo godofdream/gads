@@ -55,6 +55,64 @@ type CallFeedItem struct {
 	DisableCallConversionTracking bool               `xml:"https://adwords.google.com/api/adwords/cm/v201710 disableCallConversionTracking,omitempty"`
 }
 
+// https://developers.google.com/adwords/api/docs/reference/v201710/AdGroupExtensionSettingService.CalloutFeedItem
+// Represents a Callout extension.
+type CalloutFeedItem struct {
+	ExtensionFeedItem
+	CalloutText string `xml:"https://adwords.google.com/api/adwords/cm/v201710 calloutText,omitempty"`
+}
+
+// https://developers.google.com/adwords/api/docs/reference/v201710/AdGroupExtensionSettingService.SitelinkFeedItem
+// Represents a Sitelink extension.
+type SitelinkFeedItem struct {
+	ExtensionFeedItem
+	SitelinkText                string            `xml:"https://adwords.google.com/api/adwords/cm/v201710 sitelinkText,omitempty"`
+	SitelinkURL                 string            `xml:"https://adwords.google.com/api/adwords/cm/v201710 sitelinkUrl,omitempty"`
+	SitelinkLine2               string            `xml:"https://adwords.google.com/api/adwords/cm/v201710 sitelinkLine2,omitempty"`
+	SitelinkLine3               string            `xml:"https://adwords.google.com/api/adwords/cm/v201710 sitelinkLine3,omitempty"`
+	SitelinkFinalUrls           []string          `xml:"https://adwords.google.com/api/adwords/cm/v201710 sitelinkFinalUrls,omitempty"`
+	SitelinkFinalMobileUrls     []string          `xml:"https://adwords.google.com/api/adwords/cm/v201710 sitelinkFinalMobileUrls,omitempty"`
+	SitelinkTrackingUrlTemplate string            `xml:"https://adwords.google.com/api/adwords/cm/v201710 sitelinkTrackingUrlTemplate,omitempty"`
+	SitelinkUrlCustomParameters *CustomParameters `xml:"https://adwords.google.com/api/adwords/cm/v201710 sitelinkUrlCustomParameters,omitempty"`
+}
+
+// https://developers.google.com/adwords/api/docs/reference/v201710/AdGroupExtensionSettingService.StructuredSnippetFeedItem
+// Represents a StructuredSnippet extension.
+type StructuredSnippetFeedItem struct {
+	ExtensionFeedItem
+	Header string   `xml:"https://adwords.google.com/api/adwords/cm/v201710 header,omitempty"`
+	Values []string `xml:"https://adwords.google.com/api/adwords/cm/v201710 values,omitempty"`
+}
+
+// https://developers.google.com/adwords/api/docs/reference/v201710/AdGroupExtensionSettingService.PriceFeedItem
+// Represents a PriceFeed extension.
+type PriceFeedItem struct {
+	ExtensionFeedItem
+	// BRANDS EVENTS LOCATIONS NEIGHBORHOODS PRODUCT_CATEGORIES PRODUCT_TIERS SERVICES SERVICE_CATEGORIES SERVICE_TIERS
+	PriceExtensionType string `xml:"https://adwords.google.com/api/adwords/cm/v201710 priceExtensionType,omitempty"`
+	//UNKOWN FROM UP_TO AVERAGE NONE
+	PriceQualifier      string          `xml:"https://adwords.google.com/api/adwords/cm/v201710 priceQualifier,omitempty"`
+	TrackingUrlTemplate string          `xml:"https://adwords.google.com/api/adwords/cm/v201710 trackingUrlTemplate,omitempty"`
+	Language            string          `xml:"https://adwords.google.com/api/adwords/cm/v201710 language,omitempty"`
+	TableRows           []PriceTableRow `xml:"https://adwords.google.com/api/adwords/cm/v201710 tableRows,omitempty"`
+	Values              []string        `xml:"https://adwords.google.com/api/adwords/cm/v201710 values,omitempty"`
+}
+
+type PriceTableRow struct {
+	Header          string            `xml:"https://adwords.google.com/api/adwords/cm/v201710 header,omitempty"`
+	Description     string            `xml:"https://adwords.google.com/api/adwords/cm/v201710 description,omitempty"`
+	FinalUrls       []string          `xml:"https://adwords.google.com/api/adwords/cm/v201710 finalUrls,omitempty"`
+	FinalMobileUrls []string          `xml:"https://adwords.google.com/api/adwords/cm/v201710 finalMobileUrls,omitempty"`
+	Price           MoneyWithCurrency `xml:"https://adwords.google.com/api/adwords/cm/v201710 price,omitempty"`
+	// UNKNOWN PER_HOUR PER_DAY PER_WEEK PER_MONTH PER_YEAR PER_NIGHT
+	PriceUnit string `xml:"https://adwords.google.com/api/adwords/cm/v201710 priceUnit,omitempty"`
+}
+
+type MoneyWithCurrency struct {
+	Amount       int64  `xml:"https://adwords.google.com/api/adwords/cm/v201710 money>microAmount,omitempty"`
+	CurrencyCode string `xml:"https://adwords.google.com/api/adwords/cm/v201710 currencyCode,omitempty"`
+}
+
 func extensionsUnmarshalXML(dec *xml.Decoder, start xml.StartElement) (ext interface{}, err error) {
 	extensionsType, err := findAttr(start.Attr, xml.Name{Space: "http://www.w3.org/2001/XMLSchema-instance", Local: "type"})
 	if err != nil {
@@ -65,6 +123,23 @@ func extensionsUnmarshalXML(dec *xml.Decoder, start xml.StartElement) (ext inter
 		c := CallFeedItem{}
 		err = dec.DecodeElement(&c, &start)
 		ext = c
+	case "PriceFeedItem":
+		c := PriceFeedItem{}
+		err = dec.DecodeElement(&c, &start)
+		ext = c
+	case "StructuredSnippetFeedItem":
+		c := StructuredSnippetFeedItem{}
+		err = dec.DecodeElement(&c, &start)
+		ext = c
+	case "SitelinkFeedItem":
+		c := SitelinkFeedItem{}
+		err = dec.DecodeElement(&c, &start)
+		ext = c
+	case "CalloutFeedItem":
+		c := CalloutFeedItem{}
+		err = dec.DecodeElement(&c, &start)
+		ext = c
+
 	default:
 		err = fmt.Errorf("unknown Extensions type %#v", extensionsType)
 	}

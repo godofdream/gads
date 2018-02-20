@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"time"
 
-	gads "github.com/Getsidecar/gads/v201710"
+	gads "github.com/godofdream/gads/v201710"
 )
 
 var configJson = flag.String("oauth", "./oauth.json", "API credentials")
