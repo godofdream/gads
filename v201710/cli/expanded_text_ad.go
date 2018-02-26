@@ -36,7 +36,7 @@ func main() {
 		},
 	)
 
-	fmt.Println(ads)
+	//fmt.Println(ads)
 	adsJSON, err := json.MarshalIndent(ads, "", "  ")
 	if err != nil {
 		log.Fatal(err)

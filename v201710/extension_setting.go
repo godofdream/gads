@@ -161,6 +161,29 @@ func (s ExtensionSetting) MarshalXML(e *xml.Encoder, start xml.StartElement) err
 				xml.Attr{xml.Name{"http://www.w3.org/2001/XMLSchema-instance", "type"}, "CallFeedItem"},
 			},
 		})
+
+	case []PriceFeedItem:
+		e.EncodeElement(s.Extensions.([]PriceFeedItem), xml.StartElement{
+			xml.Name{baseUrl, "extensions"},
+			[]xml.Attr{
+				xml.Attr{xml.Name{"http://www.w3.org/2001/XMLSchema-instance", "type"}, "PriceFeedItem"},
+			},
+		})
+	case []StructuredSnippetFeedItem:
+		e.EncodeElement(s.Extensions.([]StructuredSnippetFeedItem), xml.StartElement{
+			xml.Name{baseUrl, "extensions"},
+			[]xml.Attr{
+				xml.Attr{xml.Name{"http://www.w3.org/2001/XMLSchema-instance", "type"}, "StructuredSnippetFeedItem"},
+			},
+		})
+	case []SitelinkFeedItem:
+		e.EncodeElement(s.Extensions.([]SitelinkFeedItem), xml.StartElement{
+			xml.Name{baseUrl, "extensions"},
+			[]xml.Attr{
+				xml.Attr{xml.Name{"http://www.w3.org/2001/XMLSchema-instance", "type"}, "SitelinkFeedItem"},
+			},
+		})
+
 	default:
 		return fmt.Errorf("unknown extension type %#v\n", extType)
 
