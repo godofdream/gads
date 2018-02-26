@@ -3,6 +3,8 @@ package v201710
 import (
 	"encoding/xml"
 	"fmt"
+	"reflect"
+	"strings"
 )
 
 // DayOfWeek: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
@@ -354,6 +356,7 @@ func criterionUnmarshalXML(dec *xml.Decoder, start xml.StartElement) (Criterion,
 	if err != nil {
 		return nil, err
 	}
+
 	switch criterionType {
 	case "AdSchedule":
 		c := AdScheduleCriterion{}
@@ -456,51 +459,52 @@ func criterionUnmarshalXML(dec *xml.Decoder, start xml.StartElement) (Criterion,
 
 func criterionMarshalXML(c Criterion, e *xml.Encoder) error {
 	criterionType := ""
-	switch t := c.(type) {
-	case AdScheduleCriterion:
+	ctype := reflect.ValueOf(c).Type().String()
+	switch {
+	case strings.Contains(ctype, "AdScheduleCriterion"):
 		criterionType = "AdSchedule"
-	case AgeRangeCriterion:
+	case strings.Contains(ctype, "AgeRangeCriterion"):
 		criterionType = "AgeRange"
-	case CarrierCriterion:
+	case strings.Contains(ctype, "CarrierCriterion"):
 		criterionType = "Carrier"
-	case ContentLabelCriterion:
+	case strings.Contains(ctype, "ContentLabelCriterion"):
 		criterionType = "ContentLabel"
-	case GenderCriterion:
+	case strings.Contains(ctype, "GenderCriterion"):
 		criterionType = "Gender"
-	case KeywordCriterion:
+	case strings.Contains(ctype, "KeywordCriterion"):
 		criterionType = "Keyword"
-	case LanguageCriterion:
+	case strings.Contains(ctype, "LanguageCriterion"):
 		criterionType = "Language"
-	case Location:
+	case strings.Contains(ctype, "Location"):
 		criterionType = "Location"
-	case MobileAppCategoryCriterion:
+	case strings.Contains(ctype, "MobileAppCategoryCriterion"):
 		criterionType = "MobileAppCategory"
-	case MobileApplicationCriterion:
+	case strings.Contains(ctype, "MobileApplicationCriterion"):
 		criterionType = "MobileApplication"
-	case MobileDeviceCriterion:
+	case strings.Contains(ctype, "MobileDeviceCriterion"):
 		criterionType = "MobileDevice"
-	case OperatingSystemVersionCriterion:
+	case strings.Contains(ctype, "OperatingSystemVersionCriterion"):
 		criterionType = "OperatingSystemVersion"
-	case PlacementCriterion:
+	case strings.Contains(ctype, "PlacementCriterion"):
 		criterionType = "Placement"
-	case PlatformCriterion:
+	case strings.Contains(ctype, "PlatformCriterion"):
 		criterionType = "Platform"
-	case ProductCriterion:
+	case strings.Contains(ctype, "ProductCriterion"):
 		criterionType = "Product"
-	case ProximityCriterion:
+	case strings.Contains(ctype, "ProximityCriterion"):
 		criterionType = "Proximity"
-	case UserInterestCriterion:
+	case strings.Contains(ctype, "UserInterestCriterion"):
 		criterionType = "CriterionUserInterest"
-	case UserListCriterion:
+	case strings.Contains(ctype, "UserListCriterion"):
 		criterionType = "CriterionUserList"
-	case VerticalCriterion:
+	case strings.Contains(ctype, "VerticalCriterion"):
 		criterionType = "Vertical"
-	case WebpageCriterion:
+	case strings.Contains(ctype, "WebpageCriterion"):
 		criterionType = "Webpage"
-	case ProductPartition:
+	case strings.Contains(ctype, "ProductPartition"):
 		criterionType = "ProductPartition"
 	default:
-		return fmt.Errorf("unknown criterion type %#v\n", t)
+		return fmt.Errorf("unknown criterion type %s\n", ctype)
 	}
 	e.EncodeElement(&c, xml.StartElement{
 		xml.Name{baseUrl, "criterion"},
